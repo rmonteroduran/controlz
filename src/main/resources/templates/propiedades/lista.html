@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Inmobiliaria - Gestión de Propiedades</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Listado de Propiedades Administradas</h2>
+        <a th:href="@{/propiedades/nueva}" class="btn btn-primary">Registrar Nueva Propiedad</a>
+    </div>
+
+    <!-- Sección de Filtros -->
+    <div class="card p-3 mb-4 bg-light shadow-sm">
+        <form method="get" th:action="@{/propiedades}" class="row g-3">
+            <div class="col-md-3">
+                <label for="filterDireccion" class="form-label font-monospace">Dirección</label>
+                <input type="text" id="filterDireccion" name="direccion" th:value="${direccion}" class="form-control" placeholder="Buscar dirección...">
+            </div>
+            <div class="col-md-3">
+                <label for="filterCiudad" class="form-label font-monospace">Ciudad</label>
+                <input type="text" id="filterCiudad" name="ciudad" th:value="${ciudad}" class="form-control" placeholder="Buscar ciudad...">
+            </div>
+            <div class="col-md-2">
+                <label for="filterTipo" class="form-label font-monospace">Tipo</label>
+                <select id="filterTipo" name="tipo" class="form-select">
+                    <option value="">-- Todos --</option>
+                    <option th:each="t : ${tipos}" th:value="${t}" th:text="${t}" th:selected="${t == tipoSeleccionado}"></option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="filterEstado" class="form-label font-monospace">Estado</label>
+                <select id="filterEstado" name="estado" class="form-select">
+                    <option value="">-- Todos --</option>
+                    <option th:each="e : ${estados}" th:value="${e}" th:text="${e}" th:selected="${e == estadoSeleccionado}"></option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-secondary w-100">Filtrar</button>
+                <a th:href="@{/propiedades}" class="btn btn-outline-secondary w-100">Limpiar</a>
+            </div>
+        </form>
+    </div>
+    
+    <table class="table table-striped table-hover border shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Dirección</th>
+                <th>Ciudad</th>
+                <th>Tipo</th>
+                <th>Ambientes</th>
+                <th>Metros Cuadrados</th>
+                <th>Propietario</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="p : ${propiedades}">
+                <td th:text="${p.id}" class="fw-bold text-muted"></td>
+                <td th:text="${p.direccion}"></td>
+                <td th:text="${p.ciudad}"></td>
+                <td th:text="${p.tipo}"></td>
+                <td th:text="${p.cantidadAmbientes}"></td>
+                <td th:text="${p.metrosCuadrados}"></td>
+                <td th:text="${p.propietario != null ? p.propietario.nombreCompleto : 'Sin propietario'}" class="text-secondary"></td>
+                <td>
+                    <span th:text="${p.estadoDisponibilidad}" class="badge bg-info text-dark"></span>
+                </td>
+                <td>
+                    <a th:href="@{/propiedades/editar/{id}(id=${p.id})}" class="btn btn-sm btn-warning">Editar</a>
+                    <a th:href="@{/propiedades/eliminar/{id}(id=${p.id})}" class="btn btn-sm btn-danger" 
+                       onclick="return confirm('¿Seguro que desea dar de baja esta propiedad?')">Eliminar</a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(propiedades)}">
+                <td colspan="9" class="text-center text-muted py-3">No hay propiedades registradas o activas con los filtros seleccionados.</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
