@@ -35,12 +35,19 @@
             <td th:text="${p.fechaPublicacion}"></td>
             <td th:text="${p.estadoPublicacion}"></td>
             <td th:text="${p.propiedad.direccion}"></td>
-            <td>
-                <a th:href="@{/publicaciones/eliminar/{id}(id=${p.id})}"
-                   class="btn btn-danger btn-sm">
-                   Eliminar
-                </a>
-            </td>
+			<td>
+
+			    <a th:href="@{/publicaciones/editar/{id}(id=${p.id})}"
+			       class="btn btn-warning btn-sm">
+			       Editar
+			    </a>
+
+			    <a th:href="@{/publicaciones/eliminar/{id}(id=${p.id})}"
+			       class="btn btn-danger btn-sm">
+			       Eliminar
+			    </a>
+
+			</td>
         </tr>
     </tbody>
 </table>

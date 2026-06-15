@@ -24,7 +24,17 @@ public class PublicacionController {
         model.addAttribute("publicaciones", publicacionService.listarTodas());
         return "publicaciones/lista";
     }
+    @GetMapping("/editar/{id}")
+    public String editar(@PathVariable Long id, Model model) {
 
+        Publicacion publicacion = publicacionService.buscarPorId(id);
+
+        model.addAttribute("publicacion", publicacion);
+        model.addAttribute("propiedades", propiedadService.listarTodas());
+        model.addAttribute("estados", EstadoPublicacion.values());
+
+        return "publicaciones/formulario";
+    }
     @GetMapping("/nueva")
     public String formularioAlta(Model model) {
         model.addAttribute("publicacion", new Publicacion());
