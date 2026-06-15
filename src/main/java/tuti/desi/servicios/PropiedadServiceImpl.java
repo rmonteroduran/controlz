@@ -21,7 +21,10 @@ public class PropiedadServiceImpl implements PropiedadService {
         // Trae solo las propiedades que no sufrieron baja lógica
         return propiedadRepo.findAllActivas();
     }
-
+    @Override
+    public List<Propiedad> listarDisponiblesParaPublicar() {
+        return propiedadRepo.findDisponiblesParaPublicar();
+    }
     @Override
     public List<Propiedad> listarConFiltros(String direccion, String ciudad, TipoPropiedad tipo, EstadoDisponibilidad estado) {
         return propiedadRepo.findConFiltros(

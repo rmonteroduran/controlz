@@ -21,9 +21,17 @@ public class PublicacionServiceImpl implements PublicacionService {
     public Publicacion buscarPorId(Long id) {
         return publicacionRepo.findById(id).orElse(null);
     }
-
     @Override
     public void guardar(Publicacion publicacion) {
+
+        if (publicacion.getEstadoPublicacion().name().equals("ACTIVA")
+                && publicacionRepo.existePublicacionActiva(
+                        publicacion.getPropiedad().getId())) {
+
+            throw new RuntimeException(
+                    "Ya existe una publicación activa para esta propiedad");
+        }
+
         publicacionRepo.save(publicacion);
     }
 

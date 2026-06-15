@@ -15,6 +15,8 @@ public class Publicacion {
 
     private String condiciones;
 
+    private String descripcion;
+
     private LocalDate fechaPublicacion;
 
     private boolean eliminada = false;
@@ -51,6 +53,14 @@ public class Publicacion {
 
     public void setCondiciones(String condiciones) {
         this.condiciones = condiciones;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public LocalDate getFechaPublicacion() {

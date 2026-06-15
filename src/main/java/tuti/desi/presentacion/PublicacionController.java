@@ -30,7 +30,7 @@ public class PublicacionController {
         Publicacion publicacion = publicacionService.buscarPorId(id);
 
         model.addAttribute("publicacion", publicacion);
-        model.addAttribute("propiedades", propiedadService.listarTodas());
+        model.addAttribute("propiedades", propiedadService.listarDisponiblesParaPublicar());
         model.addAttribute("estados", EstadoPublicacion.values());
 
         return "publicaciones/formulario";
@@ -38,7 +38,7 @@ public class PublicacionController {
     @GetMapping("/nueva")
     public String formularioAlta(Model model) {
         model.addAttribute("publicacion", new Publicacion());
-        model.addAttribute("propiedades", propiedadService.listarTodas());
+        model.addAttribute("propiedades", propiedadService.listarDisponiblesParaPublicar());
         model.addAttribute("estados", EstadoPublicacion.values());
         return "publicaciones/formulario";
     }
