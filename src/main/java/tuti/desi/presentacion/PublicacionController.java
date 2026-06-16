@@ -55,4 +55,3 @@ public class PublicacionController {
         return "redirect:/publicaciones";
     }
 }
-//
