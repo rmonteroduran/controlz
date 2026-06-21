@@ -15,11 +15,53 @@
     <div th:if="${exito}" class="alert alert-success" th:text="${exito}"></div>
     <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
+    <!-- Sección de Filtros -->
+    <div class="card p-3 mb-4 bg-light shadow-sm">
+        <form method="get" th:action="@{/facturas}" class="row g-3">
+            <div class="col-md-2">
+                <label for="filterContrato" class="form-label font-monospace">Contrato</label>
+                <input type="number" id="filterContrato" name="contratoId" th:value="${contratoId}" class="form-control" placeholder="ID...">
+            </div>
+            <div class="col-md-2">
+                <label for="filterPropiedad" class="form-label font-monospace">Propiedad</label>
+                <input type="text" id="filterPropiedad" name="propiedad" th:value="${propiedad}" class="form-control" placeholder="Dirección...">
+            </div>
+            <div class="col-md-2">
+                <label for="filterInquilino" class="form-label font-monospace">Inquilino</label>
+                <input type="text" id="filterInquilino" name="inquilino" th:value="${inquilino}" class="form-control" placeholder="Apellido...">
+            </div>
+            <div class="col-md-2">
+                <label for="filterEstado" class="form-label font-monospace">Estado</label>
+                <select id="filterEstado" name="estado" class="form-select">
+                    <option value="">-- Todos --</option>
+                    <option th:each="e : ${estados}"
+                            th:value="${e}"
+                            th:text="${e}"
+                            th:selected="${e == estadoSeleccionado}"></option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="filterDesde" class="form-label font-monospace">Vto. Desde</label>
+                <input type="date" id="filterDesde" name="desde" th:value="${desde}" class="form-control">
+            </div>
+            <div class="col-md-2">
+                <label for="filterHasta" class="form-label font-monospace">Vto. Hasta</label>
+                <input type="date" id="filterHasta" name="hasta" th:value="${hasta}" class="form-control">
+            </div>
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-secondary">Filtrar</button>
+                <a th:href="@{/facturas}" class="btn btn-outline-secondary">Limpiar</a>
+            </div>
+        </form>
+    </div>
+
     <table class="table table-striped table-hover border shadow-sm">
         <thead class="table-dark">
             <tr>
                 <th>ID</th>
                 <th>Contrato</th>
+                <th>Propiedad</th>
+                <th>Inquilino</th>
                 <th>Concepto</th>
                 <th>Fecha Emisión</th>
                 <th>Fecha Vencimiento</th>
@@ -31,7 +73,9 @@
         <tbody>
             <tr th:each="factura : ${facturas}">
                 <td th:text="${factura.id}" class="fw-bold text-muted"></td>
-                <td th:text="${factura.contrato.id}"></td>
+                <td th:text="'#' + ${factura.contrato.id}"></td>
+                <td th:text="${factura.contrato.propiedad != null ? factura.contrato.propiedad.direccion : '-'}"></td>
+                <td th:text="${factura.contrato.inquilino != null ? factura.contrato.inquilino.apellido : '-'}"></td>
                 <td th:text="${factura.concepto}"></td>
                 <td th:text="${factura.fechaEmision}"></td>
                 <td th:text="${factura.fechaVencimiento}"></td>
@@ -56,7 +100,7 @@
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(facturas)}">
-                <td colspan="8" class="text-center text-muted py-3">No hay facturas registradas.</td>
+                <td colspan="10" class="text-center text-muted py-3">No hay facturas registradas o que coincidan con los filtros.</td>
             </tr>
         </tbody>
     </table>

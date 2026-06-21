@@ -22,16 +22,20 @@
             <input type="text" class="form-control bg-light" th:value="${factura.id}" readonly disabled>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Contrato:</label>
-            <select th:field="*{contrato.id}" class="form-select" required>
-                <option value="">-- Seleccione un contrato --</option>
-                <option th:each="c : ${contratos}"
-                        th:value="${c.id}"
-                        th:text="'Contrato #' + ${c.id}">
-                </option>
-            </select>
-        </div>
+		<div class="mb-3">
+		    <label class="form-label">Contrato:</label>
+		    <select th:field="*{contrato.id}"
+		            class="form-select"
+		            required
+		            th:disabled="${factura.id != null}">
+		        <option value="">-- Seleccione un contrato --</option>
+		        <option th:each="c : ${contratos}"
+		                th:value="${c.id}"
+		                th:text="'Contrato #' + ${c.id}">
+		        </option>
+		    </select>
+		    <small th:if="${factura.id != null}" class="text-muted">El contrato no puede modificarse después de creada la factura.</small>
+		</div>
 
         <div class="mb-3">
             <label class="form-label">Concepto:</label>
