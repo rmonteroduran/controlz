@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Inmobiliaria - Gestión de Facturas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Listado de Facturas</h2>
+        <a th:href="@{/facturas/nueva}" class="btn btn-primary">Registrar Nueva Factura</a>
+    </div>
+
+    <!-- Mensajes de éxito y error -->
+    <div th:if="${exito}" class="alert alert-success" th:text="${exito}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <table class="table table-striped table-hover border shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Contrato</th>
+                <th>Concepto</th>
+                <th>Fecha Emisión</th>
+                <th>Fecha Vencimiento</th>
+                <th>Importe</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="factura : ${facturas}">
+                <td th:text="${factura.id}" class="fw-bold text-muted"></td>
+                <td th:text="${factura.contrato.id}"></td>
+                <td th:text="${factura.concepto}"></td>
+                <td th:text="${factura.fechaEmision}"></td>
+                <td th:text="${factura.fechaVencimiento}"></td>
+                <td th:text="${'$' + factura.importe}"></td>
+                <td>
+                    <span th:text="${factura.estado}"
+                          th:classappend="${factura.estado.name() == 'PAGADA'} ? ' bg-success' :
+                                          (${factura.estado.name() == 'PENDIENTE'} ? ' bg-warning text-dark' :
+                                          (${factura.estado.name() == 'VENCIDA'} ? ' bg-danger' : ' bg-secondary'))"
+                          class="badge"></span>
+                </td>
+                <td>
+                    <a th:href="@{/facturas/editar/{id}(id=${factura.id})}" class="btn btn-sm btn-warning">Editar</a>
+                    <form th:action="@{/facturas/eliminar/{id}(id=${factura.id})}"
+                          method="post"
+                          style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-danger"
+                                onclick="return confirm('¿Seguro que desea eliminar esta factura?')">
+                            Eliminar
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(facturas)}">
+                <td colspan="8" class="text-center text-muted py-3">No hay facturas registradas.</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
