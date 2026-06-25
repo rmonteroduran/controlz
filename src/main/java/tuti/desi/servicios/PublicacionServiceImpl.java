@@ -10,6 +10,7 @@ import tuti.desi.entidades.EstadoDisponibilidad;
 import tuti.desi.entidades.EstadoPublicacion;
 import tuti.desi.entidades.Propiedad;
 import tuti.desi.entidades.Publicacion;
+import tuti.desi.entidades.HistorialEstadoPublicacion;
 
 @Service
 public class PublicacionServiceImpl implements PublicacionService {
@@ -107,8 +108,43 @@ public class PublicacionServiceImpl implements PublicacionService {
             }
         }
 
-        // Asigna la propiedad completa
+     // Asigna la propiedad completa
         publicacion.setPropiedad(propiedad);
+
+        // ===========================
+        // HISTORIAL DE ESTADOS
+        // ===========================
+
+        if (publicacion.getId() == null) {
+
+            // Alta
+            publicacion.getHistorialEstados().add(
+                    new HistorialEstadoPublicacion(
+                            publicacion.getEstadoPublicacion(),
+                            java.time.LocalDateTime.now(),
+                            publicacion));
+
+        } else {
+
+            Publicacion anterior = buscarPorId(publicacion.getId());
+
+            if (anterior != null &&
+                anterior.getEstadoPublicacion() != publicacion.getEstadoPublicacion()) {
+
+                publicacion.getHistorialEstados().addAll(
+                        anterior.getHistorialEstados());
+
+                publicacion.getHistorialEstados().add(
+                        new HistorialEstadoPublicacion(
+                                publicacion.getEstadoPublicacion(),
+                                java.time.LocalDateTime.now(),
+                                publicacion));
+            } else if (anterior != null) {
+
+            	publicacion.setHistorialEstados(
+            	        new java.util.ArrayList<>(anterior.getHistorialEstados()));
+            }
+        }
 
         publicacionRepo.save(publicacion);
     }
