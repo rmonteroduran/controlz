@@ -20,8 +20,34 @@ public class PublicacionController {
     private PropiedadService propiedadService;
 
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("publicaciones", publicacionService.listarTodas());
+    public String listar(
+            @RequestParam(required = false) Long propiedadId,
+            @RequestParam(required = false) EstadoPublicacion estado,
+            @RequestParam(required = false) String ciudad,
+            @RequestParam(required = false) Double precioMin,
+            @RequestParam(required = false) Double precioMax,
+            Model model) {
+
+        model.addAttribute("publicaciones",
+                publicacionService.buscarConFiltros(
+                        propiedadId,
+                        estado,
+                        ciudad,
+                        precioMin,
+                        precioMax));
+
+        model.addAttribute("propiedades",
+                propiedadService.listarDisponiblesParaPublicar());
+
+        model.addAttribute("estados",
+                EstadoPublicacion.values());
+
+        model.addAttribute("propiedadId", propiedadId);
+        model.addAttribute("estado", estado);
+        model.addAttribute("ciudad", ciudad);
+        model.addAttribute("precioMin", precioMin);
+        model.addAttribute("precioMax", precioMax);
+
         return "publicaciones/lista";
     }
     @GetMapping("/editar/{id}")
@@ -44,14 +70,40 @@ public class PublicacionController {
     }
 
     @PostMapping("/guardar")
-    public String guardar(@ModelAttribute Publicacion publicacion) {
-        publicacionService.guardar(publicacion);
-        return "redirect:/publicaciones";
-    }
+    public String guardar(@ModelAttribute Publicacion publicacion,
+                          Model model) {
 
-    @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Long id) {
-        publicacionService.eliminarLogico(id);
-        return "redirect:/publicaciones";
+        try {
+            publicacionService.guardar(publicacion);
+            return "redirect:/publicaciones";
+
+        } catch (RuntimeException e) {
+
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("publicacion", publicacion);
+            model.addAttribute("propiedades",
+                    propiedadService.listarDisponiblesParaPublicar());
+            model.addAttribute("estados",
+                    EstadoPublicacion.values());
+
+            return "publicaciones/formulario";
+        }
     }
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Long id, Model model) {
+
+        try {
+            publicacionService.eliminarLogico(id);
+            return "redirect:/publicaciones";
+
+        } catch (RuntimeException e) {
+
+            model.addAttribute("publicaciones", publicacionService.listarTodas());
+            model.addAttribute("error", e.getMessage());
+
+            return "publicaciones/lista";
+        }
+    }
+    
+    
 }

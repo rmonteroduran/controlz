@@ -2,111 +2,132 @@ package tuti.desi.entidades;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "publicaciones")
 public class Publicacion {
 
-	    @Id
-	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	    private Double precioMensual;
+    private Double precioMensual;
 
-	    private String condiciones;
+    private String condiciones;
 
-	    private String descripcion;
+    private String descripcion;
 
-	    private LocalDate fechaPublicacion;
+    private LocalDate fechaPublicacion;
 
-	    private boolean eliminada = false;
+    private boolean eliminada = false;
 
-	    @Enumerated(EnumType.STRING)
-	    private EstadoPublicacion estadoPublicacion = EstadoPublicacion.ACTIVA;
+    @Enumerated(EnumType.STRING)
+    private EstadoPublicacion estadoPublicacion = EstadoPublicacion.ACTIVA;
 
-	    @ManyToOne
-	    @JoinColumn(name = "propiedad_id")
-	    private Propiedad propiedad;
+    @ManyToOne
+    @JoinColumn(name = "propiedad_id")
+    private Propiedad propiedad;
 
-	    public Publicacion() {}
+    // Historial de estados
+    @OneToMany(mappedBy = "publicacion",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<HistorialEstadoPublicacion> historialEstados = new ArrayList<>();
 
-	    public Publicacion(Long id, Double precioMensual, String condiciones,
-	                       String descripcion, LocalDate fechaPublicacion,
-	                       boolean eliminada, Propiedad propiedad,
-	                       EstadoPublicacion estadoPublicacion) {
-	        this.id = id;
-	        this.precioMensual = precioMensual;
-	        this.condiciones = condiciones;
-	        this.descripcion = descripcion;
-	        this.fechaPublicacion = fechaPublicacion;
-	        this.eliminada = eliminada;
-	        this.propiedad = propiedad;
-	        this.estadoPublicacion = estadoPublicacion;
-	    }
+    public Publicacion() {
+    }
 
-	    // METODOS GETTER Y SETTER (GET y SET)
-	    public Long getId() {
-	        return id;
-	    }
+    public Publicacion(Long id,
+                       Double precioMensual,
+                       String condiciones,
+                       String descripcion,
+                       LocalDate fechaPublicacion,
+                       boolean eliminada,
+                       Propiedad propiedad,
+                       EstadoPublicacion estadoPublicacion) {
 
-	    public void setId(Long id) {
-	        this.id = id;
-	    }
+        this.id = id;
+        this.precioMensual = precioMensual;
+        this.condiciones = condiciones;
+        this.descripcion = descripcion;
+        this.fechaPublicacion = fechaPublicacion;
+        this.eliminada = eliminada;
+        this.propiedad = propiedad;
+        this.estadoPublicacion = estadoPublicacion;
+    }
 
-	    public Double getPrecioMensual() {
-	        return precioMensual;
-	    }
+    public Long getId() {
+        return id;
+    }
 
-	    public void setPrecioMensual(Double precioMensual) {
-	        this.precioMensual = precioMensual;
-	    }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	    public String getCondiciones() {
-	        return condiciones;
-	    }
+    public Double getPrecioMensual() {
+        return precioMensual;
+    }
 
-	    public void setCondiciones(String condiciones) {
-	        this.condiciones = condiciones;
-	    }
+    public void setPrecioMensual(Double precioMensual) {
+        this.precioMensual = precioMensual;
+    }
 
-	    public String getDescripcion() {
-	        return descripcion;
-	    }
+    public String getCondiciones() {
+        return condiciones;
+    }
 
-	    public void setDescripcion(String descripcion) {
-	        this.descripcion = descripcion;
-	    }
+    public void setCondiciones(String condiciones) {
+        this.condiciones = condiciones;
+    }
 
-	    public LocalDate getFechaPublicacion() {
-	        return fechaPublicacion;
-	    }
+    public String getDescripcion() {
+        return descripcion;
+    }
 
-	    public void setFechaPublicacion(LocalDate fechaPublicacion) {
-	        this.fechaPublicacion = fechaPublicacion;
-	    }
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 
-	    public boolean isEliminada() {
-	        return eliminada;
-	    }
+    public LocalDate getFechaPublicacion() {
+        return fechaPublicacion;
+    }
 
-	    public void setEliminada(boolean eliminada) {
-	        this.eliminada = eliminada;
-	    }
+    public void setFechaPublicacion(LocalDate fechaPublicacion) {
+        this.fechaPublicacion = fechaPublicacion;
+    }
 
-	    public EstadoPublicacion getEstadoPublicacion() {
-	        return estadoPublicacion;
-	    }
+    public boolean isEliminada() {
+        return eliminada;
+    }
 
-	    public void setEstadoPublicacion(EstadoPublicacion estadoPublicacion) {
-	        this.estadoPublicacion = estadoPublicacion;
-	    }
+    public void setEliminada(boolean eliminada) {
+        this.eliminada = eliminada;
+    }
 
-	    public Propiedad getPropiedad() {
-	        return propiedad;
-	    }
+    public EstadoPublicacion getEstadoPublicacion() {
+        return estadoPublicacion;
+    }
 
-	    public void setPropiedad(Propiedad propiedad) {
-	        this.propiedad = propiedad;
-	    }
-	   
-	}
+    public void setEstadoPublicacion(EstadoPublicacion estadoPublicacion) {
+        this.estadoPublicacion = estadoPublicacion;
+    }
+
+    public Propiedad getPropiedad() {
+        return propiedad;
+    }
+
+    public void setPropiedad(Propiedad propiedad) {
+        this.propiedad = propiedad;
+    }
+
+    public List<HistorialEstadoPublicacion> getHistorialEstados() {
+        return historialEstados;
+    }
+
+    public void setHistorialEstados(List<HistorialEstadoPublicacion> historialEstados) {
+        this.historialEstados = historialEstados;
+    }
+
+}

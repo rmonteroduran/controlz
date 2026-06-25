@@ -12,4 +12,10 @@ public interface PublicacionService {
     void guardar(Publicacion publicacion);
 
     void eliminarLogico(Long id);
+    List<Publicacion> buscarConFiltros(
+            Long propiedadId,
+            tuti.desi.entidades.EstadoPublicacion estado,
+            String ciudad,
+            Double precioMin,
+            Double precioMax);
 }
