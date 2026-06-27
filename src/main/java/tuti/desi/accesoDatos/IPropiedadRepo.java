@@ -21,7 +21,7 @@ public interface IPropiedadRepo extends JpaRepository<Propiedad, Long> {
 
     @Query("SELECT p FROM Propiedad p WHERE p.eliminada = false " +
            "AND (:direccion IS NULL OR :direccion = '' OR LOWER(p.direccion) LIKE LOWER(CONCAT('%', :direccion, '%'))) " +
-           "AND (:ciudad IS NULL OR :ciudad = '' OR LOWER(p.ciudad) LIKE LOWER(CONCAT('%', :ciudad, '%'))) " +
+           "AND (:ciudad IS NULL OR :ciudad = '' OR LOWER(p.ciudad.nombre) LIKE LOWER(CONCAT('%', :ciudad, '%'))) " +
            "AND (:tipo IS NULL OR p.tipo = :tipo) " +
            "AND (:estado IS NULL OR p.estadoDisponibilidad = :estado)")
     List<Propiedad> findConFiltros(

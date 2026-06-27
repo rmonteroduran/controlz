@@ -29,6 +29,9 @@ public class Publicacion {
     @ManyToOne
     @JoinColumn(name = "propiedad_id")
     private Propiedad propiedad;
+    
+    @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Visita> visitas = new ArrayList<>();
 
     // Historial de estados
     @OneToMany(mappedBy = "publicacion",
@@ -120,6 +123,14 @@ public class Publicacion {
 
     public void setPropiedad(Propiedad propiedad) {
         this.propiedad = propiedad;
+    }
+    
+    public List<Visita> getVisitas() {
+        return visitas;
+    }
+    
+    public void setVisitas(List<Visita> visitas) {
+        this.visitas = visitas;
     }
 
     public List<HistorialEstadoPublicacion> getHistorialEstados() {

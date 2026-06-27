@@ -16,6 +16,10 @@ public class Persona {
     private String telefono;
     private String email;
     private String domicilio;
+    
+    @ManyToOne
+    @JoinColumn(name = "ciudad_id", nullable = true)
+    private Ciudad ciudad;
 
     private boolean eliminada = false;
 
@@ -52,6 +56,9 @@ public class Persona {
 
     public String getDomicilio() { return domicilio; }
     public void setDomicilio(String domicilio) { this.domicilio = domicilio; }
+    
+    public Ciudad getCiudad() { return ciudad; }
+    public void setCiudad(Ciudad ciudad) { this.ciudad = ciudad; }
 
     public boolean isEliminada() { return eliminada; }
     public void setEliminada(boolean eliminada) { this.eliminada = eliminada; }

@@ -13,7 +13,10 @@ public class Propiedad {
     private Long id;
 
     private String direccion;
-    private String ciudad; 
+    
+    @ManyToOne
+    @JoinColumn(name = "ciudad_id")
+    private Ciudad ciudad;
     
     @Enumerated(EnumType.STRING)
     
@@ -39,7 +42,7 @@ public class Propiedad {
     // Constructor
     public Propiedad() {}
 
-    public Propiedad(Long id, String direccion , String ciudad, TipoPropiedad tipo, int cantidadAmbientes, double metrosCuadrados, String descripcion, EstadoDisponibilidad EstadoDisponibilidad,Persona propietario)
+    public Propiedad(Long id, String direccion, Ciudad ciudad, TipoPropiedad tipo, int cantidadAmbientes, double metrosCuadrados, String descripcion, EstadoDisponibilidad EstadoDisponibilidad,Persona propietario)
     {
         this.id = id;
         this.direccion = direccion;
@@ -62,8 +65,8 @@ public class Propiedad {
     public String getDireccion() { return direccion; }
     public void setDireccion(String direccion) { this.direccion = direccion; }
 
-    public String getCiudad() { return ciudad; }
-    public void setCiudad(String ciudad) { this.ciudad = ciudad; }
+    public Ciudad getCiudad() { return ciudad; }
+    public void setCiudad(Ciudad ciudad) { this.ciudad = ciudad; }
 
     public TipoPropiedad getTipo() { return tipo; }
     public void setTipo(TipoPropiedad tipo) { this.tipo = tipo; }

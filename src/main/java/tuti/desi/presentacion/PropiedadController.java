@@ -19,6 +19,9 @@ public class PropiedadController {
 
     @Autowired
     private PersonaService personaService;
+    
+    @Autowired
+    private tuti.desi.accesoDatos.ICiudadRepo ciudadRepo;
 
     // 1. CONSULTA / LISTADO: Muestra la tabla con filtros
     @GetMapping
@@ -46,6 +49,7 @@ public class PropiedadController {
         model.addAttribute("tipos", TipoPropiedad.values());
         model.addAttribute("estados", EstadoDisponibilidad.values());
         model.addAttribute("propietarios", personaService.listarTodasActivas());
+        model.addAttribute("ciudades", ciudadRepo.findAll());
         return "propiedades/formulario";
     }
 
@@ -57,6 +61,7 @@ public class PropiedadController {
         model.addAttribute("tipos", TipoPropiedad.values());
         model.addAttribute("estados", EstadoDisponibilidad.values());
         model.addAttribute("propietarios", personaService.listarTodasActivas());
+        model.addAttribute("ciudades", ciudadRepo.findAll());
         return "propiedades/formulario";
     }
 
@@ -65,7 +70,7 @@ public class PropiedadController {
     public String guardar(@ModelAttribute Propiedad propiedad, Model model) {
         // Validación de campos requeridos
         if (propiedad.getDireccion() == null || propiedad.getDireccion().trim().isEmpty() ||
-            propiedad.getCiudad() == null || propiedad.getCiudad().trim().isEmpty() ||
+        	propiedad.getCiudad() == null || propiedad.getCiudad().getId() == null ||
             propiedad.getPropietario() == null || propiedad.getPropietario().getId() == null ||
             propiedad.getTipo() == null ||
             propiedad.getEstadoDisponibilidad() == null ||
@@ -78,6 +83,7 @@ public class PropiedadController {
             model.addAttribute("tipos", TipoPropiedad.values());
             model.addAttribute("estados", EstadoDisponibilidad.values());
             model.addAttribute("propietarios", personaService.listarTodasActivas());
+            model.addAttribute("ciudades", ciudadRepo.findAll());
             return "propiedades/formulario";
         }
 
@@ -88,6 +94,7 @@ public class PropiedadController {
             model.addAttribute("tipos", TipoPropiedad.values());
             model.addAttribute("estados", EstadoDisponibilidad.values());
             model.addAttribute("propietarios", personaService.listarTodasActivas());
+            model.addAttribute("ciudades", ciudadRepo.findAll());
             return "propiedades/formulario";
         }
 

@@ -40,7 +40,7 @@ public interface IPublicacionRepo extends JpaRepository<Publicacion, Long> {
     		WHERE p.eliminada = false
     		AND (:propiedadId IS NULL OR p.propiedad.id = :propiedadId)
     		AND (:estado IS NULL OR p.estadoPublicacion = :estado)
-    		AND (:ciudad IS NULL OR LOWER(p.propiedad.ciudad) LIKE LOWER(CONCAT('%', :ciudad, '%')))
+    		AND (:ciudad IS NULL OR :ciudad = '' OR LOWER(p.propiedad.ciudad.nombre) LIKE LOWER(CONCAT('%', :ciudad, '%')))
     		AND (:precioMin IS NULL OR p.precioMensual >= :precioMin)
     		AND (:precioMax IS NULL OR p.precioMensual <= :precioMax)
     		""")

@@ -2,6 +2,8 @@ package tuti.desi.entidades;
 
 import java.time.LocalDate;
 import jakarta.persistence.*;
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name="contratos")
@@ -27,6 +29,9 @@ public class Contrato {
 
     @Enumerated(EnumType.STRING)
     private EstadoContrato estado;
+    
+    @OneToMany(mappedBy = "contrato", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Incidente> incidentes = new ArrayList<>();
 
     private boolean eliminada = false;
 
@@ -55,6 +60,13 @@ public class Contrato {
 
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    
+    public List<Incidente> getIncidentes() {
+        return incidentes;
+    }
+    public void setIncidentes(List<Incidente> incidentes) {
+        this.incidentes = incidentes;
+    }
 
     public EstadoContrato getEstado() { return estado; }
     public void setEstado(EstadoContrato estado) { this.estado = estado; }
