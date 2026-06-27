@@ -23,6 +23,11 @@ public class PropiedadServiceImpl implements PropiedadService {
     }
 
     @Override
+    public List<Propiedad> listarDisponiblesParaPublicar() {
+        return propiedadRepo.findDisponiblesParaPublicar();
+    }
+
+    @Override
     public List<Propiedad> listarConFiltros(String direccion, String ciudad, TipoPropiedad tipo, EstadoDisponibilidad estado) {
         return propiedadRepo.findConFiltros(
             (direccion != null && !direccion.trim().isEmpty()) ? direccion.trim() : null,

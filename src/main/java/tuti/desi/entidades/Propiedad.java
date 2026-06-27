@@ -16,6 +16,7 @@ public class Propiedad {
     private String ciudad; 
     
     @Enumerated(EnumType.STRING)
+    
     private TipoPropiedad tipo;
 
     private Integer cantidadAmbientes;
@@ -37,6 +38,19 @@ public class Propiedad {
 
     // Constructor
     public Propiedad() {}
+
+    public Propiedad(Long id, String direccion , String ciudad, TipoPropiedad tipo, int cantidadAmbientes, double metrosCuadrados, String descripcion, EstadoDisponibilidad EstadoDisponibilidad,Persona propietario)
+    {
+        this.id = id;
+        this.direccion = direccion;
+        this.ciudad = ciudad;
+        this.tipo = tipo;
+        this.cantidadAmbientes = cantidadAmbientes;
+        this.metrosCuadrados = metrosCuadrados;
+        this.descripcion = descripcion;
+        this.estadoDisponibilidad = EstadoDisponibilidad;
+        this.propietario = propietario;
+    }
 
     // ==========================================
     // GETTERS Y SETTERS (Métodos de acceso)

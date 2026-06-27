@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface PropiedadService {
     List<Propiedad> listarTodas();
+    List<Propiedad> listarDisponiblesParaPublicar();
     List<Propiedad> listarConFiltros(String direccion, String ciudad, TipoPropiedad tipo, EstadoDisponibilidad estado);
     Propiedad buscarPorId(Long id);
     void guardar(Propiedad propiedad);
