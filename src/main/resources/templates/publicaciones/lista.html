@@ -1,156 +1,111 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>Publicaciones</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <title>Inmobiliaria - Gestión de Publicaciones</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body class="container mt-4">
 
-<div class="d-flex justify-content-between mb-3">
-    <h2>Publicaciones</h2>
-
-    <a th:href="@{/publicaciones/nueva}" class="btn btn-primary">
-        Nueva Publicación
-    </a>
-</div>
-
-<div th:if="${error}" class="alert alert-danger">
-    <span th:text="${error}"></span>
-</div>
-
-<!-- ================= FILTROS ================= -->
-
-<form method="get" th:action="@{/publicaciones}" class="card p-3 mb-4">
-
-    <div class="row">
-
-        <div class="col-md-3">
-            <label>Propiedad</label>
-
-            <select name="propiedadId" class="form-select">
-
-                <option value="">Todas</option>
-
-                <option th:each="p : ${propiedades}"
-                        th:value="${p.id}"
-                        th:text="${p.direccion}"
-                        th:selected="${propiedadId == p.id}">
-                </option>
-
-            </select>
-        </div>
-
-        <div class="col-md-2">
-            <label>Ciudad</label>
-
-            <input type="text"
-                   name="ciudad"
-                   class="form-control"
-                   th:value="${ciudad}">
-        </div>
-
-        <div class="col-md-2">
-            <label>Estado</label>
-
-            <select name="estado" class="form-select">
-
-                <option value="">Todos</option>
-
-                <option th:each="e : ${estados}"
-                        th:value="${e}"
-                        th:text="${e}"
-                        th:selected="${estado == e}">
-                </option>
-
-            </select>
-        </div>
-
-        <div class="col-md-2">
-            <label>Precio mínimo</label>
-
-            <input type="number"
-                   step="0.01"
-                   name="precioMin"
-                   class="form-control"
-                   th:value="${precioMin}">
-        </div>
-
-        <div class="col-md-2">
-            <label>Precio máximo</label>
-
-            <input type="number"
-                   step="0.01"
-                   name="precioMax"
-                   class="form-control"
-                   th:value="${precioMax}">
-        </div>
-
-        <div class="col-md-1 d-flex align-items-end">
-
-            <button class="btn btn-primary w-100">
-                Buscar
-            </button>
-
-        </div>
-
+    <!-- Cabecera alineada horizontal y verticalmente -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Publicaciones</h2>
+        <a th:href="@{/publicaciones/nueva}" class="btn btn-primary">Nueva Publicación</a>
     </div>
 
-    <div class="mt-3">
-        <a th:href="@{/publicaciones}" class="btn btn-secondary">
-            Limpiar filtros
-        </a>
+    <!-- Mensajes de Error -->
+    <div th:if="${error}" class="alert alert-danger">
+        <span th:text="${error}"></span>
     </div>
 
-</form>
+    <!-- ================= SECCIÓN DE FILTROS ================= -->
+    <div class="card p-3 mb-4 bg-light shadow-sm">
+        <form method="get" th:action="@{/publicaciones}" class="row g-3">
+            
+            <div class="col-md-2">
+                <label for="filterPropiedad" class="form-label font-monospace">Propiedad</label>
+                <select id="filterPropiedad" name="propiedadId" class="form-select">
+                    <option value="">-- Todas --</option>
+                    <option th:each="p : ${propiedades}"
+                            th:value="${p.id}"
+                            th:text="${p.direccion}"
+                            th:selected="${propiedadId == p.id}">
+                    </option>
+                </select>
+            </div>
 
-<!-- ================= TABLA ================= -->
+            <div class="col-md-2">
+                <label for="filterCiudad" class="form-label font-monospace">Ciudad</label>
+                <input type="text" id="filterCiudad" name="ciudad" th:value="${ciudad}" class="form-control" placeholder="Ciudad...">
+            </div>
 
-<table class="table table-striped">
+            <div class="col-md-2">
+                <label for="filterEstado" class="form-label font-monospace">Estado</label>
+                <select id="filterEstado" name="estado" class="form-select">
+                    <option value="">-- Todos --</option>
+                    <option th:each="e : ${estados}"
+                            th:value="${e}"
+                            th:text="${e}"
+                            th:selected="${estado == e}">
+                    </option>
+                </select>
+            </div>
 
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Condiciones</th>
-            <th>Precio Mensual</th>
-            <th>Fecha</th>
-            <th>Estado</th>
-            <th>Propiedad</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
+            <div class="col-md-2">
+                <label for="filterPrecioMin" class="form-label font-monospace">Precio Min.</label>
+                <input type="number" step="0.01" id="filterPrecioMin" name="precioMin" th:value="${precioMin}" class="form-control" placeholder="Mínimo...">
+            </div>
 
-    <tbody>
+            <div class="col-md-2">
+                <label for="filterPrecioMax" class="form-label font-monospace">Precio Max.</label>
+                <input type="number" step="0.01" id="filterPrecioMax" name="precioMax" th:value="${precioMax}" class="form-control" placeholder="Máximo...">
+            </div>
 
-        <tr th:each="p : ${publicaciones}">
+            <!-- Botones de Acción alineados al final del row -->
+            <div class="col-md-2 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-secondary w-100">Filtrar</button>
+                <a th:href="@{/publicaciones}" class="btn btn-outline-secondary w-100">Limpiar</a>
+            </div>
 
-            <td th:text="${p.id}"></td>
-            <td th:text="${p.condiciones}"></td>
-            <td th:text="${p.precioMensual}"></td>
-            <td th:text="${p.fechaPublicacion}"></td>
-            <td th:text="${p.estadoPublicacion}"></td>
-            <td th:text="${p.propiedad.direccion}"></td>
+        </form>
+    </div>
 
-            <td>
-
-                <a th:href="@{/publicaciones/editar/{id}(id=${p.id})}"
-                   class="btn btn-warning btn-sm">
-                    Editar
-                </a>
-
-                <a th:href="@{/publicaciones/eliminar/{id}(id=${p.id})}"
-                   class="btn btn-danger btn-sm"
-                   onclick="return confirm('¿Eliminar publicación?')">
-                    Eliminar
-                </a>
-
-            </td>
-
-        </tr>
-
-    </tbody>
-
-</table>
+    <!-- ================= TABLA DE RESULTADOS ================= -->
+    <table class="table table-striped table-hover border shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Condiciones</th>
+                <th>Precio Mensual</th>
+                <th>Fecha</th>
+                <th>Propiedad</th>
+				<th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="p : ${publicaciones}">
+                <td th:text="${p.id}" class="fw-bold text-muted"></td>
+                <td th:text="${p.condiciones}"></td>
+                <td th:text="${p.precioMensual}"></td>
+                <td th:text="${p.fechaPublicacion}"></td>
+                <td th:text="${p.propiedad.direccion}" class="text-secondary"></td>
+				<td>
+				    <!-- Estado estilizado como badge -->
+				    <span th:text="${p.estadoPublicacion}" class="badge bg-info text-dark"></span>
+				</td>
+                <td>
+                    <a th:href="@{/publicaciones/editar/{id}(id=${p.id})}" class="btn btn-sm btn-warning">Editar</a>
+                    <a th:href="@{/publicaciones/eliminar/{id}(id=${p.id})}" class="btn btn-sm btn-danger"
+                       onclick="return confirm('¿Seguro que desea dar de baja esta publicación?')">Eliminar</a>
+                </td>
+            </tr>
+            <!-- Mensaje cuando no hay registros -->
+            <tr th:if="${#lists.isEmpty(publicaciones)}">
+                <td colspan="7" class="text-center text-muted py-3">No hay publicaciones registradas o activas con los filtros seleccionados.</td>
+            </tr>
+        </tbody>
+    </table>
 
 </body>
 </html>

@@ -1,125 +1,78 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>Publicación</title>
-
-<link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-
+    <meta charset="UTF-8">
+    <title>Formulario de Publicación</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
+<body class="container mt-4" style="max-width: 600px;">
 
-<body class="container mt-4">
+    <h2 class="mb-4" th:text="${publicacion.id != null} ? 'Modificar Publicación' : 'Alta de Publicación'"></h2>
 
-<h2 th:text="${publicacion.id == null ? 'Nueva Publicación' : 'Editar Publicación'}"></h2>
+    <!-- Mensajes de Error del Servidor -->
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-<div th:if="${error}" class="alert alert-danger">
-    <span th:text="${error}"></span>
-</div>
+    <form th:action="@{/publicaciones/guardar}" th:object="${publicacion}" method="post" class="card p-4 shadow-sm mb-4">
+        
+        <!-- Campo ID oculto para binding en edición -->
+        <input type="hidden" th:field="*{id}">
 
-<form th:action="@{/publicaciones/guardar}"
-      th:object="${publicacion}"
-      method="post">
+        <!-- Mostrar ID en vista de edición (no editable y con fondo gris) -->
+        <div class="mb-3" th:if="${publicacion.id != null}">
+            <label class="form-label font-monospace fw-bold">ID de Publicación:</label>
+            <input type="text" class="form-control bg-light" th:value="${publicacion.id}" readonly disabled>
+        </div>
 
-    <!-- ID -->
-    <div class="mb-3" th:if="${publicacion.id != null}">
-        <label>ID</label>
-        <input type="text"
-               th:field="*{id}"
-               class="form-control"
-               readonly>
-    </div>
+        <!-- Propiedad -->
+        <div class="mb-3">
+            <label class="form-label">Propiedad:</label>
+            <select th:field="*{propiedad}" class="form-select" th:disabled="${publicacion.id != null}" required>
+                <option value="">Seleccione una propiedad</option>
+                <option th:each="p : ${propiedades}" th:value="${p.id}" th:text="${p.direccion}"></option>
+            </select>
+            <!-- Mantiene el id de propiedad cuando se edita -->
+            <input type="hidden" th:if="${publicacion.id != null}" th:field="*{propiedad.id}">
+        </div>
 
-    <!-- Propiedad -->
-    <div class="mb-3">
-        <label>Propiedad</label>
+        <!-- Condiciones -->
+        <div class="mb-3">
+            <label class="form-label">Condiciones:</label>
+            <input type="text" th:field="*{condiciones}" class="form-control" required>
+        </div>
 
-        <select th:field="*{propiedad}"
-                class="form-select"
-                th:disabled="${publicacion.id != null}"
-                required>
+        <!-- Descripción -->
+        <div class="mb-3">
+            <label class="form-label">Descripción:</label>
+            <textarea th:field="*{descripcion}" class="form-control" rows="4" required></textarea>
+        </div>
 
-            <option value="">Seleccione una propiedad</option>
+        <!-- Fila de Fecha y Precio -->
+        <div class="row">
+            <div class="col mb-3">
+                <label class="form-label">Fecha de Publicación:</label>
+                <input type="date" th:field="*{fechaPublicacion}" class="form-control" required>
+            </div>
+            <div class="col mb-3">
+                <label class="form-label">Precio Mensual:</label>
+                <input type="number" step="0.01" th:field="*{precioMensual}" class="form-control" required>
+            </div>
+        </div>
 
-            <option th:each="p : ${propiedades}"
-                    th:value="${p.id}"
-                    th:text="${p.direccion}">
-            </option>
+        <!-- Estado -->
+        <div class="mb-3">
+            <label class="form-label">Estado:</label>
+            <select th:field="*{estadoPublicacion}" class="form-select" required>
+                <option th:each="e : ${estados}" th:value="${e}" th:text="${e}"></option>
+            </select>
+        </div>
 
-        </select>
+        <!-- Botones de Acción alineados a la derecha -->
+        <div class="d-flex justify-content-end gap-2">
+            <a th:href="@{/publicaciones}" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-success">Guardar Cambios</button>
+        </div>
 
-        <!-- Mantiene el id cuando se edita -->
-        <input type="hidden"
-               th:if="${publicacion.id != null}"
-               th:field="*{propiedad.id}">
-    </div>
-
-    <!-- Condiciones -->
-    <div class="mb-3">
-        <label>Condiciones</label>
-
-        <input type="text"
-               th:field="*{condiciones}"
-               class="form-control"
-               required>
-    </div>
-
-    <!-- Descripción -->
-    <div class="mb-3">
-        <label>Descripción</label>
-
-        <textarea th:field="*{descripcion}"
-                  class="form-control"
-                  rows="4"
-                  required></textarea>
-    </div>
-
-    <!-- Fecha -->
-    <div class="mb-3">
-        <label>Fecha de Publicación</label>
-
-        <input type="date"
-               th:field="*{fechaPublicacion}"
-               class="form-control"
-               required>
-    </div>
-
-    <!-- Precio -->
-    <div class="mb-3">
-        <label>Precio Mensual</label>
-
-        <input type="number"
-               step="0.01"
-               th:field="*{precioMensual}"
-               class="form-control"
-               required>
-    </div>
-
-    <!-- Estado -->
-    <div class="mb-3">
-        <label>Estado</label>
-
-        <select th:field="*{estadoPublicacion}"
-                class="form-select"
-                required>
-
-            <option th:each="e : ${estados}"
-                    th:value="${e}"
-                    th:text="${e}">
-            </option>
-
-        </select>
-    </div>
-
-    <button type="submit" class="btn btn-success">
-        Guardar
-    </button>
-
-    <a th:href="@{/publicaciones}" class="btn btn-secondary">
-        Cancelar
-    </a>
-
-</form>
+    </form>
 
 </body>
 </html>
