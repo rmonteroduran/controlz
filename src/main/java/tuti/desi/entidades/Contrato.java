@@ -1,9 +1,11 @@
 package tuti.desi.entidades;
 
 import java.time.LocalDate;
-import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
+
+import jakarta.persistence.*;
 
 @Entity
 @Table(name="contratos")
@@ -13,6 +15,10 @@ public class Contrato {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+    @OneToMany(mappedBy = "contrato", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<HistorialEstadoContrato> historialEstados = new ArrayList<>();
+    private List<Incidente> incidentes = new ArrayList<>();
+
 	@ManyToOne
     @JoinColumn(name = "propiedad_id")
     private Propiedad propiedad;
@@ -29,14 +35,11 @@ public class Contrato {
 
     @Enumerated(EnumType.STRING)
     private EstadoContrato estado;
-    
-    @OneToMany(mappedBy = "contrato", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Incidente> incidentes = new ArrayList<>();
 
-    private boolean eliminada = false;
-
+    private boolean eliminado = false;
+    // Getters y Setters
     public Contrato() {}
-
+    
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -71,7 +74,17 @@ public class Contrato {
     public EstadoContrato getEstado() { return estado; }
     public void setEstado(EstadoContrato estado) { this.estado = estado; }
 
-    public boolean isEliminada() { return eliminada; }
-    public void setEliminada(boolean eliminada) { this.eliminada = eliminada; }
+    public boolean isEliminado() { return eliminado; }
+    public void setEliminado(boolean eliminado) { this.eliminado = eliminado; }
+
+    public void registrarCambioEstado(EstadoContrato nuevoEstado) {
+        this.estado = nuevoEstado; // Cambia el estado actual del contrato
+        
+        // Crea el renglón del historial automáticamente con la fecha/hora actual
+        HistorialEstadoContrato historial = new HistorialEstadoContrato(nuevoEstado, LocalDateTime.now(), this);
+        
+        // Lo agrega a la lista para que se guarde en la base de datos
+        this.historialEstados.add(historial);
+    }
 
 }

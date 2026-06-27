@@ -38,7 +38,7 @@ public class FacturaServiceImpl implements FacturaService {
 	    	    if (estadoContrato == EstadoContrato.FINALIZADO ||
 	    	        estadoContrato == EstadoContrato.RESCINDIDO ||
 	    	        estadoContrato == EstadoContrato.BORRADOR ||
-	    	        contrato.isEliminada()) {
+	    	        contrato.isEliminado()) {
 	    	        throw new IllegalArgumentException("No se puede crear una factura para un contrato que no está activo.");
 	    	    }
 
