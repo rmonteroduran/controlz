@@ -1,5 +1,6 @@
 package tuti.desi.entidades;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,6 +18,7 @@ public class Contrato {
 	
     @OneToMany(mappedBy = "contrato", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<HistorialEstadoContrato> historialEstados = new ArrayList<>();
+    @OneToMany
     private List<Incidente> incidentes = new ArrayList<>();
 
 	@ManyToOne
@@ -29,7 +31,7 @@ public class Contrato {
 
     private LocalDate fechaInicio;
     private Integer duracionMeses;
-    private Double importeMensual;
+    private BigDecimal importeMensual;
     private Integer diaVencimiento;
     private String descripcion;
 
@@ -55,8 +57,8 @@ public class Contrato {
     public Integer getDuracionMeses() { return duracionMeses; }
     public void setDuracionMeses(Integer duracionMeses) { this.duracionMeses = duracionMeses; }
 
-    public Double getImporteMensual() { return importeMensual; }
-    public void setImporteMensual(Double importeMensual) { this.importeMensual = importeMensual; }
+    public BigDecimal getImporteMensual() { return importeMensual; }
+    public void setImporteMensual(BigDecimal importeMensual) { this.importeMensual = importeMensual; }
 
     public Integer getDiaVencimiento() { return diaVencimiento; }
     public void setDiaVencimiento(Integer diaVencimiento) { this.diaVencimiento = diaVencimiento; }
@@ -64,7 +66,7 @@ public class Contrato {
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
     
-    public List<Incidente> getIncidentes() {
+    public List<Incidente> getIncidentes( ) {
         return incidentes;
     }
     public void setIncidentes(List<Incidente> incidentes) {

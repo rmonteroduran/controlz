@@ -8,8 +8,9 @@ import tuti.desi.entidades.Contrato;
 import tuti.desi.entidades.EstadoContrato;
 
 
-import tuti.desi.entidades.EstadoDisponibilidad; 
+import tuti.desi.entidades.EstadoDisponibilidad;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -19,15 +20,14 @@ public class ContratoServiceImpl implements ContratoService {
     @Autowired
     private IContratoRepo contratoRepo;
 
-    //@Autowired
-    //private PropiedadService propiedadService;
+    @Autowired
+    private PropiedadService propiedadService;
     
     @Override
     @Transactional
-    //implements ContratoService
     public Contrato crearContrato(Contrato contrato) throws Exception {
         // Validaciones obligatorias
-        if (contrato.getImporteMensual() == null || contrato.getImporteMensual() <= 0) {
+        if (contrato.getImporteMensual() == null || contrato.getImporteMensual().compareTo(BigDecimal.ZERO) <= 0) {
             throw new Exception("El importe mensual debe ser un número positivo.");
         }
         if (contrato.getDuracionMeses() == null || contrato.getDuracionMeses() <= 0) {
@@ -51,6 +51,7 @@ public class ContratoServiceImpl implements ContratoService {
             
             // Efecto colateral: Cambia la propiedad a ALQUILADA
             contrato.getPropiedad().setEstadoDisponibilidad(EstadoDisponibilidad.ALQUILADA);
+            propiedadService.guardar(contrato.getPropiedad()); 
         }
 
         // Registra automáticamente el estado inicial en la tabla intermedia de historial
@@ -70,18 +71,18 @@ public class ContratoServiceImpl implements ContratoService {
         Contrato contratoExistente = contratoRepo.findById(contrato.getId())
                 .orElseThrow(() -> new Exception("Contrato no encontrado en el sistema."));
 
+        // Proteccion contra nulos
+        if (contrato.getImporteMensual() == null || contrato.getImporteMensual().compareTo(BigDecimal.ZERO) <= 0) throw new Exception("El importe mensual debe ser positivo.");
+        if (contrato.getDuracionMeses() == null || contrato.getDuracionMeses() <= 0) throw new Exception("La duración debe ser positiva.");
+        if (contrato.getDiaVencimiento() == null || contrato.getDiaVencimiento() < 1 || contrato.getDiaVencimiento() > 31) throw new Exception("Día de vencimiento inválido.");
+
         EstadoContrato estadoAnterior = contratoExistente.getEstado();
         EstadoContrato nuevoEstado = contrato.getEstado();
-
-        // Validaciones comerciales generales
-        if (contrato.getImporteMensual() <= 0) throw new Exception("El importe mensual debe ser positivo.");
-        if (contrato.getDuracionMeses() <= 0) throw new Exception("La duración debe ser positiva.");
-        if (contrato.getDiaVencimiento() < 1 || contrato.getDiaVencimiento() > 31) throw new Exception("Día de vencimiento inválido.");
 
         // Control del flujo y transiciones de estado
         if (estadoAnterior != nuevoEstado) {
             
-            // No se permite volver de "finalizado" o "rescindido" a "activo"
+            // Transicion: no se permite volver de FINALIZADO o RESCINDIDO a ACTIVO
             if (estadoAnterior == EstadoContrato.FINALIZADO || estadoAnterior == EstadoContrato.RESCINDIDO) {
                 throw new Exception("No se puede modificar el estado de un contrato finalizado o rescindido.");
             }
@@ -90,12 +91,14 @@ public class ContratoServiceImpl implements ContratoService {
             if (estadoAnterior == EstadoContrato.BORRADOR && nuevoEstado == EstadoContrato.ACTIVO) {
                 validarPropiedadParaActivacion(contrato.getPropiedad().getId());
                 contrato.getPropiedad().setEstadoDisponibilidad(EstadoDisponibilidad.ALQUILADA);
+                propiedadService.guardar(contrato.getPropiedad()); // guardar cambios en propiedad
             }
             
             // Transición: ACTIVO -> FINALIZADO o RESCINDIDO
             if (estadoAnterior == EstadoContrato.ACTIVO && (nuevoEstado == EstadoContrato.FINALIZADO || nuevoEstado == EstadoContrato.RESCINDIDO)) {
                 // La propiedad vuelve a quedar libre
                 contrato.getPropiedad().setEstadoDisponibilidad(EstadoDisponibilidad.DISPONIBLE);
+                propiedadService.guardar(contrato.getPropiedad()); // guardar cambios en propiedad
             }
 
             // Impacta automáticamente en la lista interna de historial que creamos en la entidad
@@ -147,6 +150,11 @@ public class ContratoServiceImpl implements ContratoService {
 
     // Validación para evitar duplicidad de contratos activos en una propiedad
     private void validarPropiedadParaActivacion(Long propiedadId) throws Exception {
+        // Validar que esté estructuralmente DISPONIBLE
+        if (propiedadService.buscarPorId(propiedadId).getEstadoDisponibilidad() != EstadoDisponibilidad.DISPONIBLE) {
+            throw new Exception("No se puede activar el contrato porque la propiedad no se encuentra DISPONIBLE.");
+        }
+        // Validar que no haya disputas con otro contrato activo en BD
         boolean yaTieneContratoActivo = contratoRepo.propiedadValidaDisponible(propiedadId, EstadoContrato.ACTIVO);
         if (yaTieneContratoActivo) {
             throw new Exception("La propiedad seleccionada ya posee otro contrato ACTIVO vigente. No se puede activar este contrato.");
