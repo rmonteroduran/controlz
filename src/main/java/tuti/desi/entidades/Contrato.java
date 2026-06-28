@@ -18,6 +18,7 @@ public class Contrato {
 	
     @OneToMany(mappedBy = "contrato", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<HistorialEstadoContrato> historialEstados = new ArrayList<>();
+    
     @OneToMany
     private List<Incidente> incidentes = new ArrayList<>();
 
