@@ -8,6 +8,8 @@ import tuti.desi.entidades.EstadoContrato;
 import tuti.desi.entidades.EstadoFactura;
 import tuti.desi.entidades.Factura;
 import tuti.desi.entidades.HistorialEstadoFactura;
+
+import java.math.BigDecimal;
 import java.util.List;
 import tuti.desi.entidades.Contrato;
 
@@ -49,7 +51,7 @@ public class FacturaServiceImpl implements FacturaService {
 	    	        throw new IllegalArgumentException("La fecha de vencimiento debe ser igual o posterior a la fecha de emisión.");
 	    	    }
 
-	    	    if (factura.getImporte() == null || factura.getImporte() <= 0) {
+	    	    if (factura.getImporte() == null || factura.getImporte().compareTo(BigDecimal.ZERO) <= 0) {
 	    	        throw new IllegalArgumentException("El importe debe ser mayor a cero.");
 	    	    }
 
@@ -83,7 +85,7 @@ public class FacturaServiceImpl implements FacturaService {
 	            throw new IllegalArgumentException("La fecha de vencimiento debe ser igual o posterior a la fecha de emisión.");
 	        }
 
-	        if (factura.getImporte() == null || factura.getImporte() <= 0) {
+	        if (factura.getImporte() == null || factura.getImporte().compareTo(BigDecimal.ZERO) <= 0) {
 	            throw new IllegalArgumentException("El importe debe ser mayor a cero.");
 	        }
 

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.math.BigDecimal;
 
 import tuti.desi.accesoDatos.IPublicacionRepo;
 import tuti.desi.entidades.EstadoDisponibilidad;
@@ -46,7 +47,7 @@ public class PublicacionServiceImpl implements PublicacionService {
 
         // Validación del precio
         if (publicacion.getPrecioMensual() == null
-                || publicacion.getPrecioMensual() <= 0) {
+                || publicacion.getPrecioMensual().compareTo(BigDecimal.ZERO) <= 0) {
 
             throw new RuntimeException(
                     "El precio mensual debe ser mayor a cero");
@@ -154,8 +155,8 @@ public class PublicacionServiceImpl implements PublicacionService {
             Long propiedadId,
             EstadoPublicacion estado,
             String ciudad,
-            Double precioMin,
-            Double precioMax) {
+            BigDecimal precioMin,
+            BigDecimal precioMax) {
 
         return publicacionRepo.buscarConFiltros(
                 propiedadId,

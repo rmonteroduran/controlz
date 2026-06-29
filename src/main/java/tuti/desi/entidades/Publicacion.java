@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "publicaciones")
@@ -13,7 +14,7 @@ public class Publicacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double precioMensual;
+    private BigDecimal precioMensual;
 
     private String condiciones;
 
@@ -43,7 +44,7 @@ public class Publicacion {
     }
 
     public Publicacion(Long id,
-                       Double precioMensual,
+                       BigDecimal precioMensual,
                        String condiciones,
                        String descripcion,
                        LocalDate fechaPublicacion,
@@ -69,11 +70,11 @@ public class Publicacion {
         this.id = id;
     }
 
-    public Double getPrecioMensual() {
+    public BigDecimal getPrecioMensual() {
         return precioMensual;
     }
 
-    public void setPrecioMensual(Double precioMensual) {
+    public void setPrecioMensual(BigDecimal precioMensual) {
         this.precioMensual = precioMensual;
     }
 

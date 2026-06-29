@@ -1,5 +1,6 @@
 package tuti.desi.accesoDatos;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -48,6 +49,6 @@ public interface IPublicacionRepo extends JpaRepository<Publicacion, Long> {
     		        Long propiedadId,
     		        tuti.desi.entidades.EstadoPublicacion estado,
     		        String ciudad,
-    		        Double precioMin,
-    		        Double precioMax);
+    		        BigDecimal precioMin,
+    		        BigDecimal precioMax);
 }

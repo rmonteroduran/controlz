@@ -2,7 +2,7 @@ package tuti.desi.entidades;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
-
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "facturas")
@@ -19,7 +19,7 @@ public class Factura {
     private String concepto;
     private LocalDate fechaEmision;
     private LocalDate fechaVencimiento;
-    private Double importe;
+    private BigDecimal importe;
 
     @Enumerated(EnumType.STRING)
     private EstadoFactura estado;
@@ -50,8 +50,8 @@ public class Factura {
     public LocalDate getFechaVencimiento() { return fechaVencimiento; }
     public void setFechaVencimiento(LocalDate fechaVencimiento) { this.fechaVencimiento = fechaVencimiento; }
 
-    public Double getImporte() { return importe; }
-    public void setImporte(Double importe) { this.importe = importe; }
+    public BigDecimal getImporte() { return importe; }
+    public void setImporte(BigDecimal importe) { this.importe = importe; }
 
     public EstadoFactura getEstado() { return estado; }
     public void setEstado(EstadoFactura estado) { this.estado = estado; }

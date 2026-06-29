@@ -1,6 +1,8 @@
 package tuti.desi.servicios;
 
 import tuti.desi.entidades.Publicacion;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface PublicacionService {
@@ -16,6 +18,6 @@ public interface PublicacionService {
             Long propiedadId,
             tuti.desi.entidades.EstadoPublicacion estado,
             String ciudad,
-            Double precioMin,
-            Double precioMax);
+            BigDecimal precioMin,
+            BigDecimal precioMax);
 }

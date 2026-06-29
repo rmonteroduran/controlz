@@ -140,7 +140,7 @@ public class ContratoServiceImpl implements ContratoService {
         Contrato contrato = contratoRepo.findById(id)
                 .orElseThrow(() -> new Exception("Contrato no encontrado."));
 
-        // HU 3.2: Solo pueden eliminarse contratos en estado BORRADOR
+        // Solo permite eliminar contratos en estado BORRADOR
         if (contrato.getEstado() != EstadoContrato.BORRADOR) {
             throw new Exception("No se puede eliminar el contrato. Motivo: Solo se permite la baja si el contrato está en estado BORRADOR.");
         }

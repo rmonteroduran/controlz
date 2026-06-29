@@ -1,5 +1,7 @@
 package tuti.desi.presentacion;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,8 +26,8 @@ public class PublicacionController {
             @RequestParam(required = false) Long propiedadId,
             @RequestParam(required = false) EstadoPublicacion estado,
             @RequestParam(required = false) String ciudad,
-            @RequestParam(required = false) Double precioMin,
-            @RequestParam(required = false) Double precioMax,
+            @RequestParam(required = false) BigDecimal precioMin,
+            @RequestParam(required = false) BigDecimal precioMax,
             Model model) {
 
         model.addAttribute("publicaciones",
