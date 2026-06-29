@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Inmobiliaria - Gestión de Contratos</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
-<body class="bg-light">
+<body class="container mt-4">
 
-<div class="container mt-5">
+    <a th:href="@{/}" class="btn btn-outline-secondary mb-4">
+        <i class="bi bi-arrow-left"></i> Volver al Inicio
+    </a>
     
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-file-earmark-text"></i> Administración de Contratos</h2>
-        <a th:href="@{/contratos/nuevo}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Nuevo Contrato
-        </a>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2><i class="bi bi-file-earmark-text-fill text-success"></i> Contratos</h2>
+        <a th:href="@{/contratos/nuevo}" class="btn btn-success fw-bold text-white">Nuevo Contrato</a>
     </div>
 
+    <!-- Mensajes de éxito y error -->
     <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show" role="alert">
         <i class="bi bi-check-circle-fill"></i> <span th:text="${mensajeExito}"></span>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -26,126 +27,104 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
-    <div class="card mb-4 border-0 shadow-sm">
-        <div class="card-header bg-dark text-white fw-bold"> Filtros de Búsqueda
-        </div>
-        <div class="card-body">
-            <form th:action="@{/contratos}" method="get" class="row g-3">
-                
-                <div class="col-md-3">
-                    <label for="propiedadId" class="form-label">Propiedad</label>
-                    <select id="propiedadId" name="propiedadId" class="form-select">
-                        <option value="">-- Todas --</option>
-                        <option th:each="p : ${propiedades}" 
-                                th:value="${p.id}" 
-                                th:text="${p.direccion + ' (' + p.tipo + ')'}"
-                                th:selected="${param.propiedadId != null && param.propiedadId[0] == p.id.toString()}">
-                        </option>
-                    </select>
-                </div>
-
-                <div class="col-md-3">
-                    <label for="inquilinoId" class="form-label">Inquilino</label>
-                    <select id="inquilinoId" name="inquilinoId" class="form-select">
-                        <option value="">-- Todos --</option>
-                        <option th:each="i : ${inquilinos}" 
-                                th:value="${i.id}" 
-                                th:text="${i.apellido + ', ' + i.nombre}"
-                                th:selected="${param.inquilinoId != null && param.inquilinoId[0] == i.id.toString()}">
-                        </option>
-                    </select>
-                </div>
-
-                <div class="col-md-3">
-                    <label for="estado" class="form-label">Estado</label>
-                    <select id="estado" name="estado" class="form-select">
-                        <option value="">-- Todos --</option>
-                        <option th:each="est : ${estados}" 
-                                th:value="${est}" 
-                                th:text="${est}"
-                                th:selected="${param.estado != null && param.estado[0] == est.name()}">
-                        </option>
-                    </select>
-                </div>
-
-                <div class="col-md-3">
-                    <label for="fechaInicio" class="form-label">Fecha de Inicio</label>
-                    <input type="date" id="fechaInicio" name="fechaInicio" class="form-control"
-                        th:value="${param.fechaInicio}">
-                </div>
-
-                <div class="col-12 d-flex justify-content-end gap-2">
-                    <a th:href="@{/contratos}" class="btn btn-secondary">Limpiar</a>
-                    <button type="submit" class="btn btn-dark">Buscar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>ID</th>
-                            <th>Propiedad</th>
-                            <th>Inquilino</th>
-                            <th>Fecha Inicio</th>
-                            <th>Duración</th>
-                            <th>Importe Mensual</th>
-                            <th>Vencimiento</th>
-                            <th>Estado</th>
-                            <th class="text-center">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:if="${#lists.isEmpty(contratos)}">
-                            <td colspan="9" class="text-center py-4 text-muted">
-                                No se encontraron contratos activos que coincidan con los criterios de búsqueda.
-                            </td>
-                        </tr>
-                        <tr th:each="c : ${contratos}">
-                            <td th:text="${c.id}" class="fw-bold">1</td>
-                            <td th:text="${c.propiedad.direccion}">Direccion 123</td>
-                            <td th:text="${c.inquilino.apellido + ', ' + c.inquilino.nombre}">Gomez, Juan</td>
-                            <td th:text="${#temporals.format(c.fechaInicio, 'dd/MM/yyyy')}">01/01/2026</td>
-                            <td th:text="${c.duracionMeses + ' meses'}">24 meses</td>
-                            <td th:text="${'$' + #numbers.formatDecimal(c.importeMensual, 1, 'POINT', 2, 'COMMA')}">$150.000,00</td>
-                            <td th:text="${'Día ' + c.diaVencimiento}">Día 5</td>
-                            <td>
-                                <span class="badge" 
-                                    th:classappend="${c.estado.name() == 'BORRADOR' ? 'bg-warning text-dark' : 
-                                                    c.estado.name() == 'ACTIVO' ? 'bg-success' : 
-                                                    c.estado.name() == 'FINALIZADO' ? 'bg-secondary' : 'bg-danger'}"
-                                    th:text="${c.estado}">
-                                    BORRADOR
-                                </span>
-                            </td>
-                            <td class="text-center">
-                                <div class="d-flex justify-content-center gap-2">
-                                    <a th:href="@{/contratos/editar/{id}(id=${c.id})}" class="btn btn-sm btn-outline-primary" title="Editar">
-                                        Editar
-                                    </a>
-                                    
-                                    <a th:href="@{/contratos/eliminar/{id}(id=${c.id})}" 
-                                        class="btn btn-sm btn-outline-danger" 
-                                        th:classappend="${c.estado.name() != 'BORRADOR' ? 'disabled' : ''}"
-                                        onclick="return confirm('¿Está seguro de que desea eliminar este contrato de forma lógica?');"
-                                        title="Eliminar (Solo Borradores)">
-                                        Eliminar
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+    <!-- Sección de Filtros (Estilo exacto a Propiedades/Facturas) -->
+    <div class="card p-3 mb-4 bg-light shadow-sm">
+        <form method="get" th:action="@{/contratos}" class="row g-3">
+            <div class="col-md-3">
+                <label for="propiedadId" class="form-label font-monospace">Propiedad</label>
+                <select id="propiedadId" name="propiedadId" class="form-select">
+                    <option value="">-- Todas --</option>
+                    <option th:each="p : ${propiedades}" 
+                            th:value="${p.id}" 
+                            th:text="${p.direccion + ' (' + p.tipo + ')'}"
+                            th:selected="${param.propiedadId != null && param.propiedadId[0] == p.id.toString()}">
+                    </option>
+                </select>
             </div>
-        </div>
+            <div class="col-md-3">
+                <label for="inquilinoId" class="form-label font-monospace">Inquilino</label>
+                <select id="inquilinoId" name="inquilinoId" class="form-select">
+                    <option value="">-- Todos --</option>
+                    <option th:each="i : ${inquilinos}" 
+                            th:value="${i.id}" 
+                            th:text="${i.apellido + ', ' + i.nombre}"
+                            th:selected="${param.inquilinoId != null && param.inquilinoId[0] == i.id.toString()}">
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="estado" class="form-label font-monospace">Estado</label>
+                <select id="estado" name="estado" class="form-select">
+                    <option value="">-- Todos --</option>
+                    <option th:each="est : ${estados}" 
+                            th:value="${est}" 
+                            th:text="${est}"
+                            th:selected="${param.estado != null && param.estado[0] == est.name()}">
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="fechaInicio" class="form-label font-monospace">Fecha de Inicio</label>
+                <input type="date" id="fechaInicio" name="fechaInicio" class="form-control"
+                       th:value="${param.fechaInicio}">
+            </div>
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-secondary">Filtrar</button>
+                <a th:href="@{/contratos}" class="btn btn-outline-secondary">Limpiar</a>
+            </div>
+        </form>
     </div>
 
-</div>
+    <!-- Tabla de Contratos (Estilo plano exacto a Propiedades) -->
+    <table class="table table-striped table-hover border shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Propiedad</th>
+                <th>Inquilino</th>
+                <th>Fecha Inicio</th>
+                <th>Duración</th>
+                <th>Importe Mensual</th>
+                <th>Vencimiento</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="c : ${contratos}">
+                <td th:text="${c.id}" class="fw-bold text-muted"></td>
+                <td th:text="${c.propiedad.direccion}"></td>
+                <td th:text="${c.inquilino.apellido + ', ' + c.inquilino.nombre}"></td>
+                <td th:text="${#temporals.format(c.fechaInicio, 'dd/MM/yyyy')}"></td>
+                <td th:text="${c.duracionMeses + ' meses'}"></td>
+                <td th:text="${'$' + #numbers.formatDecimal(c.importeMensual, 1, 'POINT', 2, 'COMMA')}"></td>
+                <td th:text="${'Día ' + c.diaVencimiento}"></td>
+                <td>
+                    <span class="badge" 
+                        th:classappend="${c.estado.name() == 'BORRADOR' ? 'bg-warning text-dark' : 
+                                        c.estado.name() == 'ACTIVO' ? 'bg-success' : 
+                                        c.estado.name() == 'FINALIZADO' ? 'bg-secondary' : 'bg-danger'}"
+                        th:text="${c.estado}">
+                        BORRADOR
+                    </span>
+                </td>
+                <td>
+                    <a th:href="@{/contratos/editar/{id}(id=${c.id})}" class="btn btn-sm btn-warning">Editar</a>
+                    <a th:href="@{/contratos/eliminar/{id}(id=${c.id})}" 
+                       class="btn btn-sm btn-danger" 
+                       th:classappend="${c.estado.name() != 'BORRADOR' ? 'disabled' : ''}"
+                       onclick="return confirm('¿Está seguro de que desea eliminar este contrato de forma lógica?');"
+                       title="Eliminar (Solo Borradores)">
+                        Eliminar
+                    </a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(contratos)}">
+                <td colspan="9" class="text-center text-muted py-3">No hay contratos registrados o que coincidan con los filtros.</td>
+            </tr>
+        </tbody>
+    </table>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

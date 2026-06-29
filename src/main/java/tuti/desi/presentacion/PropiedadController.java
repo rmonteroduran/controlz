@@ -9,6 +9,7 @@ import tuti.desi.entidades.Propiedad;
 import tuti.desi.entidades.TipoPropiedad;
 import tuti.desi.servicios.PersonaService;
 import tuti.desi.servicios.PropiedadService;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/propiedades")
@@ -104,8 +105,13 @@ public class PropiedadController {
 
     // 5. BAJA LÓGICA:
     @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Long id) {
-        propiedadService.eliminarLogico(id);
+    public String eliminar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            propiedadService.eliminarLogico(id);
+            redirectAttributes.addFlashAttribute("exito", "La propiedad fue eliminada correctamente.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
         return "redirect:/propiedades";
     }
 }

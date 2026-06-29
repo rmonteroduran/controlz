@@ -6,9 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import tuti.desi.accesoDatos.IContratoRepo;
 import tuti.desi.entidades.Contrato;
 import tuti.desi.entidades.EstadoContrato;
-
-
 import tuti.desi.entidades.EstadoDisponibilidad;
+import tuti.desi.entidades.Propiedad;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -49,9 +48,11 @@ public class ContratoServiceImpl implements ContratoService {
         if (contrato.getEstado() == EstadoContrato.ACTIVO) {
             validarPropiedadParaActivacion(contrato.getPropiedad().getId());
             
-            // Efecto colateral: Cambia la propiedad a ALQUILADA
-            contrato.getPropiedad().setEstadoDisponibilidad(EstadoDisponibilidad.ALQUILADA);
-            propiedadService.guardar(contrato.getPropiedad()); 
+	        // Cargar la propiedad completa antes de modificarla y guardarla
+	        Propiedad propiedadCompleta = propiedadService.buscarPorId(contrato.getPropiedad().getId());
+	        propiedadCompleta.setEstadoDisponibilidad(EstadoDisponibilidad.ALQUILADA);
+	        propiedadService.guardar(propiedadCompleta); 
+	        contrato.setPropiedad(propiedadCompleta);
         }
 
         // Registra automáticamente el estado inicial en la tabla intermedia de historial
@@ -86,19 +87,34 @@ public class ContratoServiceImpl implements ContratoService {
             if (estadoAnterior == EstadoContrato.FINALIZADO || estadoAnterior == EstadoContrato.RESCINDIDO) {
                 throw new Exception("No se puede modificar el estado de un contrato finalizado o rescindido.");
             }
+            
+
+            // Transición: no se permite pasar de BORRADOR a FINALIZADO o RESCINDIDO directamente
+            if (estadoAnterior == EstadoContrato.BORRADOR && (nuevoEstado == EstadoContrato.FINALIZADO || nuevoEstado == EstadoContrato.RESCINDIDO)) {
+                throw new Exception("No se puede finalizar o rescindir un contrato que se encuentra en estado BORRADOR.");
+            }
+            
+            // Transición: no se permite que un contrato ACTIVO vuelva a estado BORRADOR
+            if (estadoAnterior == EstadoContrato.ACTIVO && nuevoEstado == EstadoContrato.BORRADOR) {
+                throw new Exception("No se puede volver un contrato ACTIVO al estado BORRADOR.");
+            }
 
             // Transición: BORRADOR -> ACTIVO
             if (estadoAnterior == EstadoContrato.BORRADOR && nuevoEstado == EstadoContrato.ACTIVO) {
                 validarPropiedadParaActivacion(contrato.getPropiedad().getId());
-                contrato.getPropiedad().setEstadoDisponibilidad(EstadoDisponibilidad.ALQUILADA);
-                propiedadService.guardar(contrato.getPropiedad()); // guardar cambios en propiedad
+                Propiedad propiedadCompleta = propiedadService.buscarPorId(contrato.getPropiedad().getId());
+                propiedadCompleta.setEstadoDisponibilidad(EstadoDisponibilidad.ALQUILADA);
+                propiedadService.guardar(propiedadCompleta); 
+                contrato.setPropiedad(propiedadCompleta);
             }
             
             // Transición: ACTIVO -> FINALIZADO o RESCINDIDO
             if (estadoAnterior == EstadoContrato.ACTIVO && (nuevoEstado == EstadoContrato.FINALIZADO || nuevoEstado == EstadoContrato.RESCINDIDO)) {
                 // La propiedad vuelve a quedar libre
-                contrato.getPropiedad().setEstadoDisponibilidad(EstadoDisponibilidad.DISPONIBLE);
-                propiedadService.guardar(contrato.getPropiedad()); // guardar cambios en propiedad
+            	Propiedad propiedadCompleta = propiedadService.buscarPorId(contrato.getPropiedad().getId());
+            	propiedadCompleta.setEstadoDisponibilidad(EstadoDisponibilidad.DISPONIBLE);
+            	propiedadService.guardar(propiedadCompleta);
+            	contrato.setPropiedad(propiedadCompleta);
             }
 
             // Impacta automáticamente en la lista interna de historial que creamos en la entidad

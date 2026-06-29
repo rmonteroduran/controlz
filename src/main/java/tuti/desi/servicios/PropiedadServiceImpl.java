@@ -15,6 +15,9 @@ public class PropiedadServiceImpl implements PropiedadService {
 
     @Autowired
     private IPropiedadRepo propiedadRepo;
+    
+    @Autowired
+    private tuti.desi.accesoDatos.IContratoRepo contratoRepo;
 
     @Override
     public List<Propiedad> listarTodas() {
@@ -67,6 +70,11 @@ public class PropiedadServiceImpl implements PropiedadService {
 
     @Override
     public void eliminarLogico(Long id) {
+        // Valida si la propiedad posee algún contrato activo y vigente
+        boolean tieneContratoActivo = contratoRepo.propiedadValidaDisponible(id, tuti.desi.entidades.EstadoContrato.ACTIVO);
+        if (tieneContratoActivo) {
+            throw new RuntimeException("No se puede dar de baja la propiedad porque posee un contrato activo y vigente.");
+        }
         Propiedad p = buscarPorId(id);
         if (p != null) {
             p.setEliminada(true);

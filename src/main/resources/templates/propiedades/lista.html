@@ -14,6 +14,15 @@
         <h2><i class="bi bi-house-door-fill text-warning"></i> Propiedades</h2>
         <a th:href="@{/propiedades/nueva}" class="btn btn-warning fw-bold text-dark">Nueva Propiedad</a>
     </div>
+	
+	<div th:if="${exito}" class="alert alert-success alert-dismissible fade show" role="alert">
+	    <i class="bi bi-check-circle-fill"></i> <span th:text="${exito}"></span>
+	    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+	<div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+	    <i class="bi bi-exclamation-octagon-fill"></i> <span th:text="${error}"></span>
+	    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
 
     <!-- Sección de Filtros -->
     <div class="card p-3 mb-4 bg-light shadow-sm">
@@ -71,7 +80,7 @@
                 <td th:text="${p.metrosCuadrados}"></td>
                 <td th:text="${p.propietario != null ? p.propietario.nombreCompleto : 'Sin propietario'}" class="text-secondary"></td>
                 <td>
-                    <span th:text="${p.estadoDisponibilidad}" class="badge bg-info text-dark"></span>
+					<span th:text="${p.estadoDisponibilidad}" class="badge" th:classappend="${p.estadoDisponibilidad.name() == 'DISPONIBLE' ? 'bg-success' : p.estadoDisponibilidad.name() == 'RESERVADA' ? 'bg-warning text-dark' : p.estadoDisponibilidad.name() == 'ALQUILADA' ? 'bg-info text-dark' : 'bg-secondary'}"></span>
                 </td>
                 <td>
                     <a th:href="@{/propiedades/editar/{id}(id=${p.id})}" class="btn btn-sm btn-warning">Editar</a>
@@ -84,5 +93,6 @@
             </tr>
         </tbody>
     </table>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

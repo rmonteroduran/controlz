@@ -76,10 +76,12 @@
             <textarea th:field="*{descripcion}" class="form-control" rows="3" required></textarea>
         </div>
         
-        <div class="d-flex justify-content-end gap-2">
-            <a th:href="@{/propiedades}" class="btn btn-secondary">Cancelar</a>
-            <button type="submit" class="btn btn-warning fw-bold text-dark">Guardar Cambios</button>
-        </div>
+		<div class="d-flex justify-content-end gap-2">
+		    <a th:href="@{/propiedades}" class="btn btn-secondary">Cancelar</a>
+		    <button type="submit" class="btn btn-warning fw-bold text-dark">
+		        <span th:text="${propiedad.id == null} ? 'Registrar Propiedad' : 'Guardar Cambios'"></span>
+		    </button>
+		</div>
     </form>
 
     <!-- Modal para dar de alta propietario rápido (AJAX) -->
@@ -123,10 +125,10 @@
                         </div>
                     </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" id="btnGuardarPropietario" class="btn btn-primary fw-bold">Guardar Propietario</button>
-                </div>
+				<div class="modal-footer">
+				    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+				    <button type="button" id="btnGuardarPropietario" class="btn btn-primary fw-bold">Guardar Propietario</button>
+				</div>
             </div>
         </div>
     </div>

@@ -95,7 +95,7 @@
                 <td th:text="${p.propiedad.direccion}" class="text-secondary"></td>
 				<td>
 				    <!-- Estado estilizado como badge -->
-				    <span th:text="${p.estadoPublicacion}" class="badge bg-info text-dark"></span>
+					<span th:text="${p.estadoPublicacion}" class="badge" th:classappend="${p.estadoPublicacion.name() == 'ACTIVA' ? 'bg-success' : p.estadoPublicacion.name() == 'PAUSADA' ? 'bg-warning text-dark' : 'bg-secondary'}"></span>
 				</td>
                 <td>
                     <a th:href="@{/publicaciones/editar/{id}(id=${p.id})}" class="btn btn-sm btn-warning">Editar</a>

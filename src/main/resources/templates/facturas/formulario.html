@@ -94,10 +94,12 @@
             </div>
         </div>
 
-        <div class="d-flex justify-content-end gap-2">
-            <a th:href="@{/facturas}" class="btn btn-secondary">Cancelar</a>
-            <button type="submit" class="btn btn-danger fw-bold text-white">Guardar Cambios</button>
-        </div>
+		<div class="d-flex justify-content-end gap-2">
+		    <a th:href="@{/facturas}" class="btn btn-secondary">Cancelar</a>
+		    <button type="submit" class="btn btn-danger fw-bold text-white">
+		        <span th:text="${factura.id == null} ? 'Registrar Factura' : 'Guardar Cambios'"></span>
+		    </button>
+		</div>
     </form>
 
 </body>

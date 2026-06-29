@@ -67,10 +67,12 @@
         </div>
 
         <!-- Botones de Acción alineados a la derecha -->
-        <div class="d-flex justify-content-end gap-2">
-            <a th:href="@{/publicaciones}" class="btn btn-secondary">Cancelar</a>
-            <button type="submit" class="btn btn-info fw-bold text-dark">Guardar Cambios</button>
-        </div>
+		<div class="d-flex justify-content-end gap-2">
+		    <a th:href="@{/publicaciones}" class="btn btn-secondary">Cancelar</a>
+		    <button type="submit" class="btn btn-info fw-bold text-dark">
+		        <span th:text="${publicacion.id == null} ? 'Registrar Publicación' : 'Guardar Cambios'"></span>
+		    </button>
+		</div>
 
     </form>
 
